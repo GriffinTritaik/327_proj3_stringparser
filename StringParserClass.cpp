@@ -73,6 +73,12 @@ using namespace KP_StringParserClass;
 
 
 	void cleanup(){
+		if(pStartTag) {
+			delete[] (pStartTag);
+		}
+		if(pEndTag) {
+			delete[] (pEndTag);
+		}
 	}
 
 		//Searches a string starting at pStart for pTagToLookFor
