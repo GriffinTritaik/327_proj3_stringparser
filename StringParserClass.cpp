@@ -50,13 +50,20 @@ using namespace KP_StringParserClass;
 		//returns:
 		//SUCCESS
 		//ERROR_TAGS_NULL if either pStart or pEnd is null
-	int setTags(const char *pStart, const char *pEnd){
+	int StringParserClass::setTags(const char *pStart, const char *pEnd){
 		if (pStart == 0 || pEnd == 0){
 			return ERROR_TAGS_NULL;
 		}
-		int pLen = strlen(pStart);
-		pStartTag = new char[pLen+1];
-		strncpy(pStartTag, pStart, pLen);
+
+		int startLen = strlen(pStart);
+		int endLen = strlen(pEnd);
+
+		pStartTag = new char[startLen+1];
+		pEndTag = new char[endLen+1];
+
+		strncpy(pStartTag, pStart, startLen);
+		strncpy(pEndTag, pEnd, endLen);
+
 		return SUCCESS;
 	}
 
@@ -67,17 +74,27 @@ using namespace KP_StringParserClass;
 		//SUCCESS  finished searching for data between tags, results in myVector (0 or more entries)
 		//ERROR_TAGS_NULL if either pStart or pEnd is null
 		//ERROR_DATA_NULL pDataToSearchThru is null
-	int getDataBetweenTags(char *pDataToSearchThru, std::vector<std::string> &myVector){
-		return 0;
+	int StringParserClass::getDataBetweenTags(char *pDataToSearchThru, std::vector<std::string> &myVector){
+		myVector.clear();
+		if (pStartTag == 0 || pEndTag == 0){
+			return ERROR_TAGS_NULL;
+		}
+		if (pDataToSearchThru == 0){
+			return ERROR_DATA_NULL;
+		}
+
+
+
+		return SUCCESS;
 	}
 
 
-	void cleanup(){
+	void StringParserClass::cleanup(){
 		if(pStartTag) {
 			delete[] (pStartTag);
 		}
 		if(pEndTag) {
-			delete[] (pEndTag);
+			delete[] (pStartTag);
 		}
 	}
 
@@ -86,7 +103,7 @@ using namespace KP_StringParserClass;
 		//SUCCESS  found pTagToLookFor, pStart points to beginning of tag and pEnd points to end of tag
 		//FAIL did not find pTagToLookFor and pEnd points to 0
 		//ERROR_TAGS_NULL if either pStart or pEnd is null
-	int findTag(char *pTagToLookFor, char *&pStart, char *&pEnd){
+	int StringParserClass::findTag(char *pTagToLookFor, char *&pStart, char *&pEnd){
 		return 0;
 	}
-}
+
