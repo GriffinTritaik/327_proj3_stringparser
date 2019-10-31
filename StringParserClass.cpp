@@ -11,30 +11,12 @@
 #include "../327_proj3_test/includes/constants.h"
 
 using namespace KP_StringParserClass;
-
-//StringParserClass::StringParserClass() {
-//	//*pStartTag = new char;
-//	//*pEndTag = new char();
-//	areTagsSet = false;
-//}
-//
-//int KP_StringParserClass::StringParserClass::setTags(const char *pStart, const char *pEnd) {
-//	return 0;
-//}
-//
-//int KP_StringParserClass::StringParserClass::getDataBetweenTags
-//		(char *pDataToSearchThru, std::vector<std::string> &myVector){
-//	return 0;
-//
-//int findTag(char *pTagToLookFor, char *&pStart, char *&pEnd);
-//
-//void cleanup();
-
+const int SIZE = 200;
 
 		//dont forget to initialize member variables
 	StringParserClass::StringParserClass(void){
-		pStartTag = 0;
-		pEndTag = 0;
+		pStartTag = new char[SIZE];
+		pEndTag = new char[SIZE];
 		areTagsSet = false;
 	}
 
@@ -79,14 +61,40 @@ using namespace KP_StringParserClass;
 		//ERROR_DATA_NULL pDataToSearchThru is null
 	int StringParserClass::getDataBetweenTags(char *pDataToSearchThru, std::vector<std::string> &myVector){
 		myVector.clear();
-		if (pStartTag == NULL || pEndTag == NULL){
+		if (areTagsSet == false){
 			return ERROR_TAGS_NULL;
 		}
 		if (pDataToSearchThru == NULL){
 			return ERROR_DATA_NULL;
 		}
 
+		int pDataToSearchThruSize = strlen(pDataToSearchThru);
+		char *SST = pDataToSearchThru;
+		char *EST = pDataToSearchThru + pDataToSearchThruSize;
+		char *SET = pDataToSearchThru;
+		char *EET = pDataToSearchThru + pDataToSearchThruSize;
 
+		std::string toAdd = "";
+
+		while (findTag(pStartTag, pDataToSearchThru, EST) == SUCCESS){
+			if(findTag(pEndTag, SET, EET) == FAIL){
+				return SUCCESS;
+			}
+			if(findTag(pEndTag, SET, EET) == SUCCESS){
+				while (EST != SET){
+					toAdd += *EST;
+					EST++;
+				}
+				myVector.push_back(toAdd);
+				toAdd = "";
+				pDataToSearchThru = EET;
+				pDataToSearchThruSize = strlen(pDataToSearchThru);
+				EST = pDataToSearchThru + pDataToSearchThruSize;
+				EET = pDataToSearchThru + pDataToSearchThruSize;
+				SET = pDataToSearchThru;
+				SST = pDataToSearchThru;
+			}
+		}
 
 		return SUCCESS;
 	}
@@ -111,11 +119,11 @@ using namespace KP_StringParserClass;
 		//ERROR_TAGS_NULL if either pStart or pEnd is null
 	int StringParserClass::findTag(char *pTagToLookFor, char *&pStart, char *&pEnd){
 
-		if (pStart == 0 || pEnd == 0){
+		if (pStart == NULL || pEnd == NULL){
 			return ERROR_TAGS_NULL;
 		}
 
-		int lenArray = sizeof(pTagToLookFor) / sizeof(char);
+		int lenArray = strlen(pTagToLookFor);
 
 		while (pStart != pEnd){
 			if (*pStart == *pTagToLookFor){
