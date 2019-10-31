@@ -101,6 +101,7 @@ using namespace KP_StringParserClass;
 			delete[] (pStartTag);
 			pEndTag = 0;
 		}
+
 	}
 
 		//Searches a string starting at pStart for pTagToLookFor
