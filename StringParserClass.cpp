@@ -41,6 +41,7 @@ using namespace KP_StringParserClass;
 		//call cleanup to release any allocated memory
 	StringParserClass::~StringParserClass(void){
 		cleanup();
+		areTagsSet = false;
 	}
 
 		//these are the start tag and the end tags that we want to find,
@@ -51,7 +52,7 @@ using namespace KP_StringParserClass;
 		//SUCCESS
 		//ERROR_TAGS_NULL if either pStart or pEnd is null
 	int StringParserClass::setTags(const char *pStart, const char *pEnd){
-		if (pStart == 0 || pEnd == 0){
+		if (pStart == NULL || pEnd == NULL){
 			return ERROR_TAGS_NULL;
 		}
 
@@ -63,6 +64,8 @@ using namespace KP_StringParserClass;
 
 		strncpy(pStartTag, pStart, startLen);
 		strncpy(pEndTag, pEnd, endLen);
+
+		areTagsSet = true;
 
 		return SUCCESS;
 	}
@@ -76,10 +79,10 @@ using namespace KP_StringParserClass;
 		//ERROR_DATA_NULL pDataToSearchThru is null
 	int StringParserClass::getDataBetweenTags(char *pDataToSearchThru, std::vector<std::string> &myVector){
 		myVector.clear();
-		if (pStartTag == 0 || pEndTag == 0){
+		if (pStartTag == NULL || pEndTag == NULL){
 			return ERROR_TAGS_NULL;
 		}
-		if (pDataToSearchThru == 0){
+		if (pDataToSearchThru == NULL){
 			return ERROR_DATA_NULL;
 		}
 
@@ -92,9 +95,11 @@ using namespace KP_StringParserClass;
 	void StringParserClass::cleanup(){
 		if(pStartTag) {
 			delete[] (pStartTag);
+			pStartTag = 0;
 		}
 		if(pEndTag) {
 			delete[] (pStartTag);
+			pEndTag = 0;
 		}
 	}
 
@@ -104,6 +109,22 @@ using namespace KP_StringParserClass;
 		//FAIL did not find pTagToLookFor and pEnd points to 0
 		//ERROR_TAGS_NULL if either pStart or pEnd is null
 	int StringParserClass::findTag(char *pTagToLookFor, char *&pStart, char *&pEnd){
-		return 0;
+
+		if (pStart == 0 || pEnd == 0){
+			return ERROR_TAGS_NULL;
+		}
+
+		int lenArray = sizeof(pTagToLookFor) / sizeof(char);
+
+		while (pStart != pEnd){
+			if (*pStart == *pTagToLookFor){
+				if(strncmp(pStart, pTagToLookFor, lenArray) == 0){
+					pEnd = pStart + lenArray;
+					return SUCCESS;
+				}
+			}
+			pStart++;
+		}
+		return FAIL;
 	}
 
